@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rotación Críticos v5.5</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <style>
+    :root {
+      --bg:#0a1526; --panel:#0f1e33; --panel2:#12233d;
+      --sergas:#0c5aa6; --sergas2:#1877c9; --teal:#22b8cf;
+      --green:#2fbf9f; --red:#f43f5e; --orange:#fb923c;
+      --text:#eaf2ff; --muted:#93a9c9; --border:#1e3350;
+      --badge-default:#3a4a63;
+    }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: radial-gradient(1200px 600px at 50% -10%, #12243f 0%, var(--bg) 55%); color: var(--text); margin: 0; padding: 10px; min-height: 100dvh; display: flex; flex-direction: column; gap: 6px; }
+
+    .hero { position: relative; height: 88px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); }
+    .hero svg.bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .hero .overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8,18,34,.92) 0%, rgba(8,18,34,.55) 55%, rgba(8,18,34,.35) 100%); }
+    .hero .content { position: absolute; inset: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; }
+    .logo { width: 40px; height: 40px; }
+    .titles h1 { margin: 0; font-size: 1rem; font-weight: 800; }
+    .titles small { display: block; color: var(--teal); font-size: .58rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; margin-top: 2px; }
+    
+    .clockbox { text-align: right; }
+    .clock { font-size: 1.25rem; font-weight: 800; line-height: 1; }
+    .date { font-size: 0.95rem; color: var(--text); margin-top: 2px; font-weight: 700; }
+    #dayType { font-size: 1.1rem; font-weight: 900; margin-top: 2px; text-transform: uppercase; }
+
+    .motto { text-align: center; font-size: 0.78rem; font-weight: 800; letter-spacing: 3px; color: var(--teal); text-transform: uppercase; margin: 4px 0; }
+
+    .glass-card { background: linear-gradient(180deg, var(--panel) 0%, #0b1728 100%); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+
+    .titulo-jornada {
+      font-size: 1rem;
+      color: var(--muted);
+      margin: 15px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    h2 {
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin: 15px 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .h-center { text-align: center; font-size: 0.7rem; color: var(--text); margin: 20px 0 10px 0; font-weight: 800; border-top: 1px solid var(--border); padding-top: 15px; }
+    
+    .grid-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    button { background: var(--panel2); border: none; color: var(--text); padding: 9px; border-radius: 11px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.3s; }
+    button.selected { outline: 3px solid white; color: #fff; transform: scale(1.05); }
+    
+    .coto { background: var(--teal); color: #000; }
+    .camas { background: var(--orange); color: #000; }
+    .boxes { background: var(--red); color: #fff; }
+
+    .main-btn { width: 100%; margin-top: 20px; background: linear-gradient(135deg, var(--sergas2), var(--teal)); color: #fff; font-weight: 800; padding: 12px; border-radius: 12px; border: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.8rem; }
+    th { color: var(--teal); border-bottom: 2px solid var(--border); padding: 8px; text-align: left; }
+    td { border-bottom: 1px solid #1a2a40; padding: 8px; }
+
+    .footer {
+      text-align: center;
+      font-size: 0.6rem;
+      color: var(--muted);
+      margin-top: 10px;
+      padding-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="bg" viewBox="0 0 400 92" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="92" fill="#183a63"/><path d="M0 78 Q120 58 230 70 T400 66 V92 H0 Z" fill="#0e3a2c"/></svg>
+  <div class="overlay"></div>
+  <div class="content">
+    <div class="logo-wrap">
+      <svg class="logo" viewBox="0 0 100 100"><rect x="4" y="4" width="92" height="92" rx="18" fill="#0c5aa6"/><rect x="40" y="20" width="20" height="60" rx="4" fill="#fff"/><rect x="20" y="40" width="60" height="20" rx="4" fill="#fff"/></svg>
+      <div class="titles"><h1>Hospital Álvaro Cunqueiro</h1><small>Área Sanitaria de Vigo · SERGAS</small></div>
+    </div>
+    <div class="clockbox">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="date" id="date">-- de --</div>
+      <div id="dayType">--</div>
+    </div>
+  </div>
+</div>
+
+<div class="motto">ROTACIÓN BUSCA DE CRÍTICOS</div>
+
+<div class="glass-card">
+
+  <div class="titulo-jornada">TIPO DE JORNADA</div>
+
+  <div class="grid-chips" id="jornada">
+    <button aria-pressed="false" onclick="set('jornada','LAB_5',this)">LAB. 5 COTOS</button>
+    <button aria-pressed="false" onclick="set('jornada','LAB_4',this)">LAB. 4 COTOS</button>
+    <button aria-pressed="false" onclick="set('jornada','FEST',this)">FESTIVOS</button>
+  </div>
+
+  <div id="resumen" class="h-center">
+    <span id="badge" style="
+      display:inline-block;
+      background:var(--badge-default);
+      color:#fff;
+      padding:6px 14px;
+      border-radius:20px;
+      font-weight:900;
+      letter-spacing:1px;
+      font-size:1rem;
+      transition:0.3s;
+    ">UBICACIÓN</span>
+  </div>
+
+  <h2>Cotos</h2>
+  <div class="grid-chips">
+    <button class="coto" onclick="set('ubicacion','COTO 1',this)">COTO 1</button>
+    <button class="coto" onclick="set('ubicacion','COTO 2',this)">COTO 2</button>
+    <button class="coto" onclick="set('ubicacion','COTO 3',this)">COTO 3</button>
+    <button class="coto" onclick="set('ubicacion','COTO 4',this)">COTO 4</button>
+    <button class="coto" onclick="set('ubicacion','COTO 5',this)">COTO 5</button>
+  </div>
+
+  <h2>Camas</h2>
+  <div class="grid-chips">
+    <button class="camas" onclick="set('ubicacion','CAMAS 13h',this)">CAMAS 13h</button>
+    <button class="camas" onclick="set('ubicacion','CAMAS 24h',this)">CAMAS 24h</button>
+  </div>
+
+  <h2>Boxes</h2>
+  <div class="grid-chips">
+    <button class="boxes" onclick="set('ubicacion','BOXES A',this)">BOXES A</button>
+    <button class="boxes" onclick="set('ubicacion','BOXES B',this)">BOXES B</button>
+    <button class="boxes" onclick="set('ubicacion','BOXES C',this)">BOXES C</button>
+    <button class="boxes" onclick="set('ubicacion','BOXES D',this)">BOXES D</button>
+    <button class="boxes" onclick="set('ubicacion','BOXES E',this)">BOXES E</button>
+    <button class="boxes" onclick="set('ubicacion','BOXES F',this)">BOXES F</button>
+  </div>
+
+  <button class="main-btn" onclick="consultar()">CONSULTAR ASIGNACIÓN</button>
+  <div id="resultado"></div>
+</div>
+
+<div class="footer">© JORGE NOGUEIRA · v5.5</div>
+
+<script>
+  const state = { jornada: '', ubicacion: '' };
+
+  const db = {
+
+    LAB_5: [
+      { horario: '9h-10h', reas: { 'REA': 'REA 1', 'COTO 3': 'REA 2' } },
+      { horario: '10h-11h', reas: { 'REA': 'REA 1', 'COTO 1': 'REA 2' } },
+      { horario: '11h-12h', reas: { 'REA': 'REA 1', 'COTO 5': 'REA 2', 'CAMAS 24h': 'REA 3' } },
+      { horario: '12h-13h', reas: { 'REA': 'REA 1', 'COTO 2': 'REA 2' } },
+      { horario: '13h-14h', reas: { 'REA': 'REA 1', 'COTO 4': 'REA 2' } },
+      { horario: '14h-15h', reas: { 'REA': 'REA 1', 'COTO 3': 'REA 2' } },
+      { horario: '15h-15:30h', reas: { 'CAMAS 13h': 'REA 1', 'COTO 1': 'REA 2', 'COTO 5': 'REA 3' } },
+      { horario: '15:30h-16h', reas: { 'CAMAS 13h': 'REA 1', 'COTO 5': 'REA 2' } },
+      { horario: '16h-22h', reas: { 'REA': 'REA 1', 'CAMAS 13h': 'REA 2', 'CAMAS 24h': 'REA 3' } },
+      { horario: '22h-24h', reas: { 'CAMAS 24h': 'REA 1', 'BOXES 1': 'REA 2' } }
+    ],
+
+    FEST: [
+      { horario: '9h-10h', reas: { 'COTO 5': 'REA 1', 'COTO 1': 'REA 2' } },
+      { horario: '10h-11h', reas: { 'COTO 4': 'REA 1', 'COTO 2': 'REA 2' } },
+      { horario: '11h-12h', reas: { 'COTO 1': 'REA 1', 'COTO 5': 'REA 2' } },
+      { horario: '12h-13h', reas: { 'COTO 2': 'REA 1', 'COTO 4': 'REA 2', 'CAMAS 24h': 'REA 3' } },
+      { horario: '13h-14h', reas: { 'COTO 5': 'REA 1', 'COTO 1': 'REA 2' } },
+      { horario: '14h-15h', reas: { 'COTO 4': 'REA 1', 'COTO 2': 'REA 2' } },
+      { horario: '15h-15:30h', reas: { 'CAMAS 13h': 'REA 1', 'COTO 5': 'REA 2' } },
+      { horario: '15:30h-16h', reas: { 'CAMAS 13h': 'REA 1', 'COTO 1': 'REA 2' } },
+      { horario: '16h-22h', reas: { 'CAMAS 13h': 'REA 1', 'CAMAS 24h': 'REA 2' } },
+      { horario: '22h-24h', reas: { 'CAMAS 24h': 'REA 1', 'BOXES 1': 'REA 2' } }
+    ],
+
+    LAB_4: []
+  };
+
+  function set(tipo, valor, btn) {
+    state[tipo] = valor;
+
+    btn.parentElement.querySelectorAll('button').forEach(x => {
+      x.classList.remove('selected');
+      x.setAttribute('aria-pressed','false');
+    });
+
+    btn.classList.add('selected');
+    btn.setAttribute('aria-pressed','true');
+
+    updateBadge();
+  }
+
+  function updateBadge() {
+    const badge = document.getElementById('badge');
+    const ubic = state.ubicacion || '—';
+
+    badge.textContent = `UBICACIÓN: ${ubic}`;
+
+    if (ubic.startsWith('COTO')) {
+      badge.style.background = 'var(--teal)';
+      badge.style.color = '#000';
+    } else if (ubic.startsWith('CAMAS')) {
+      badge.style.background = 'var(--orange)';
+      badge.style.color = '#000';
+    } else if (ubic.startsWith('BOXES')) {
+      badge.style.background = 'var(--red)';
+      badge.style.color = '#fff';
+    } else {
+      badge.style.background = 'var(--badge-default)';
+      badge.style.color = '#fff';
+    }
+  }
+
+  function consultar() {
+    const res = document.getElementById('resultado');
+
+    if (!state.jornada || !state.ubicacion) {
+      res.innerHTML = "<p style='text-align:center;margin-top:15px;color:var(--red);'>Selecciona jornada y ubicación.</p>";
+      return;
+    }
+
+    const tabla = db[state.jornada];
+    if (!tabla) {
+      res.innerHTML = "<p style='text-align:center;margin-top:15px;'>Sin datos para esta jornada.</p>";
+      return;
+    }
+
+    let html = `<table><tr><th>Horario</th><th>Asignación</th></tr>`;
+    let found = false;
+
+    tabla.forEach(item => {
+      const asignacion = item.reas[state.ubicacion];
+      if (asignacion) {
+        html += `<tr><td>${item.horario}</td><td>${asignacion}</td></tr>`;
+        found = true;
+      }
+    });
+
+    res.innerHTML = found
+      ? html + `</table>`
+      : "<p style='text-align:center;margin-top:15px;'>EQUIPO CORRESPONDIENTE</p>";
+  }
+
+  function update() {
+    const n = new Date();
+    document.getElementById('date').textContent =
+      n.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    const isF = (n.getDay()===0 || n.getDay()===6);
+    const dt = document.getElementById('dayType');
+    dt.textContent = isF ? "FESTIVO" : "LABORABLE";
+    dt.style.color = isF ? "var(--red)" : "var(--green)";
+    document.getElementById('clock').textContent =
+      n.toTimeString().slice(0,8);
+  }
+
+  setInterval(update, 1000);
+  update();
+</script>
+
+</body>
+</html>
